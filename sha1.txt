@@ -1,0 +1,5 @@
+1C:55:4A:91:42:39:9C:51:17:53:D6:9E:CF:08:29:4A:6D:7B:BE:95
+API key: AIzaSyDL7Im2KeUFQ9488PGWiQXekAEWA4KZ6bg
+
+Change package name:
+select the java file -> right click ---> refactor ->move -> select your preferred package.
