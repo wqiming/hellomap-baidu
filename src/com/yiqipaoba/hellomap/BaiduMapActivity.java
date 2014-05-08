@@ -1,9 +1,13 @@
 package com.yiqipaoba.hellomap;
 
-import android.app.Activity;
-import android.app.Fragment;
-import android.content.Intent;
+import android.content.Context;
+//import android.content.Intent;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,7 +19,7 @@ import com.baidu.mapapi.map.MapController;
 import com.baidu.mapapi.map.MapView;
 import com.baidu.platform.comapi.basestruct.GeoPoint;
 
-public class BaiduMapActivity extends Activity {
+public class BaiduMapActivity extends FragmentActivity {
 	BMapManager mBMapMan = null;
 	MapView mMapView = null;
 
@@ -29,8 +33,26 @@ public class BaiduMapActivity extends Activity {
 		mMapView.setBuiltInZoomControls(true);
 		//	get view
 		MapController mMapController=mMapView.getController();
-		//	use fixed latitude and longitude to create point
-		GeoPoint point = new GeoPoint((int)(39.915 *1E6), (int)(116.404*1E6));
+		
+		Criteria criteria = new Criteria();
+        LocationManager locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+        String provider = locationManager.getBestProvider(criteria, false);
+        Location location = locationManager.getLastKnownLocation(provider);
+        /*
+        if (location==null){
+        	//locationManager.requestSingleUpdate(criteria, this, Looper.myLooper());
+        	locationManager.requestLocationUpdates((long)60000, (float)10, criteria, this, Looper.myLooper());
+        	location = locationManager.getLastKnownLocation(provider);
+        }
+        */
+        double lat = 39.915;
+        double lng = 116.404;
+        if (location!=null){
+	        lat = location.getLatitude();
+	        lng = location.getLongitude();
+        }
+        
+		GeoPoint point = new GeoPoint((int)(lat *1E6), (int)(lng * 1E6));
 		mMapController.setCenter(point);
 		mMapController.setZoom(12);
 	}
@@ -44,7 +66,7 @@ public class BaiduMapActivity extends Activity {
 		setContentView(R.layout.activity_baidu_map);
 
 		if (savedInstanceState == null) {
-			getFragmentManager().beginTransaction()
+			getSupportFragmentManager().beginTransaction()
 					.add(R.id.container, new PlaceholderFragment()).commit();
 		}
 	}
@@ -95,14 +117,10 @@ public class BaiduMapActivity extends Activity {
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 		if (id == R.id.action_google_map) {
-			//Intent intent = new Intent(this, DisplayMessageActivity.class);
-			//EditText editText = (EditText)findViewById(R.id.edit_message);
-			//String message = editText.getText().toString();
-			//intent.putExtra(EXTRA_MESSAGE, message);
-			//startActivity(intent);
-			Intent intent = new Intent(this, MainActivity.class);
+			//Intent intent = new Intent(this, MainActivity.class);
 			//	put location info
-			startActivity(intent);
+			//startActivity(intent);
+			super.onBackPressed();
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
